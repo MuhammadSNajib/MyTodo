@@ -1,11 +1,30 @@
 import * as types from './../types';
 
 const initialState = {
-  data: []
+  isLoading: false,
+  data: [],
+  error: null
 }
 
 export default function todos(state = initialState, action) {
   switch (action.type) {
+    case "GET_DATA":
+      return {
+        ...state,
+        isLoading: true
+      };
+    case "GET_DATA_FULFILLED":
+      return {
+        ...state,
+        isLoading: false,
+        data: action.payload.data.data
+      };
+    case "GET_DATA_REJECTED":
+      return {
+        ...state,
+        isLoading: false,
+        error: payload.message
+      };
     case types.ADD_TODO:
       return {
         ...state,

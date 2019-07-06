@@ -24,6 +24,10 @@ class List extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.getData()
+  }
+
   handleAdd = () => {
     this.props.addTodos({ id: Math.floor(Math.random() * 9), title: this.state.titleTask })
     Keyboard.dismiss()
@@ -35,7 +39,7 @@ class List extends Component {
   }
 
   handleEdit = item => () => {
-    this.props.editTodos({id: item.id, title: "Aku habis di edit guys.."})
+    this.props.editTodos({ id: item.id, title: "Aku habis di edit guys.." })
   }
 
 
@@ -64,7 +68,7 @@ class List extends Component {
             <View style={styles.containerList}>
               {this.props.todos.data.length !== 0 && this.props.todos.data.map((item, i) => (
                 <View key={i} style={styles.list}>
-                  <Text style={styles.textList}>{item.title}</Text>
+                  <Text style={styles.textList}>{item.name}</Text>
                   <View style={[styles.contentAction]} >
                     <Icon color={"grey"} name={"edit"} type={"font-awesome"} onPress={this.handleEdit(item)} />
                     <Icon color={"grey"} name={"trash"} type={"font-awesome"} onPress={this.handleRemove(item)} />
@@ -98,6 +102,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    getData: () => dispatch(actionTodos.getData()),
     addTodos: (value) => dispatch(actionTodos.addTodos(value)),
     editTodos: (value) => dispatch(actionTodos.editTodos(value)),
     removeTodos: (id) => dispatch(actionTodos.removeTodos(id))

@@ -4,10 +4,10 @@ import { createNavigationReducer } from 'react-navigation-redux-helpers';
 import RootNavigation from './../../navigations/RootNavigation';
 import todos from './todos';
 
-const reducerRouter = createNavigationReducer(RootNavigation);
+const router = createNavigationReducer(RootNavigation);
 
 const appReducer = combineReducers({
-  router: reducerRouter,
+  router,
   todos
 })
 
