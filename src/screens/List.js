@@ -6,7 +6,8 @@ import {
   View,
   Text,
   StatusBar,
-  Image
+  Image,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
@@ -18,8 +19,23 @@ class List extends Component {
     super(props)
 
     this.state = {
+      idTask: null,
       titleTask: ""
     }
+  }
+
+  handleAdd = () => {
+    this.props.addTodos({ id: Math.floor(Math.random() * 9), title: this.state.titleTask })
+    Keyboard.dismiss()
+    this.setState({ titleTask: "" })
+  }
+
+  handleRemove = item => () => {
+    this.props.removeTodos(item.id)
+  }
+
+  handleEdit = item => () => {
+    this.props.editTodos({id: item.id, title: "Aku habis di edit guys.."})
   }
 
 
@@ -42,16 +58,16 @@ class List extends Component {
               returnKeyType={"send"}
               value={this.state.titleTask}
               onChangeText={(text) => this.setState({ titleTask: text })}
-              onSubmitEditing={() => this.props.addTodos({ id: Math.floor(Math.random() * 9), title: this.state.titleTask })} />
+              onSubmitEditing={this.handleAdd} />
 
 
             <View style={styles.containerList}>
               {this.props.todos.data.length !== 0 && this.props.todos.data.map((item, i) => (
                 <View key={i} style={styles.list}>
                   <Text style={styles.textList}>{item.title}</Text>
-                  <View style={styles.row} >
-                    <Icon name={"edit"} type={"font-awesome"} />
-                    <Icon name={"trash"} type={"font-awesome"} />
+                  <View style={[styles.contentAction]} >
+                    <Icon color={"grey"} name={"edit"} type={"font-awesome"} onPress={this.handleEdit(item)} />
+                    <Icon color={"grey"} name={"trash"} type={"font-awesome"} onPress={this.handleRemove(item)} />
                   </View>
                 </View>
               ))}
@@ -82,7 +98,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTodos: (value) => dispatch(actionTodos.addTodos(value))
+    addTodos: (value) => dispatch(actionTodos.addTodos(value)),
+    editTodos: (value) => dispatch(actionTodos.editTodos(value)),
+    removeTodos: (id) => dispatch(actionTodos.removeTodos(id))
   }
 }
 
@@ -91,8 +109,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  row: {
-    flexDirection: 'row'
+  contentAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '20%',
+    justifyContent: 'space-between',
+    marginRight: 20
   },
   conteiner: {
     flex: 1
@@ -125,7 +147,8 @@ const styles = StyleSheet.create({
   list: {
     borderBottomWidth: 1,
     borderBottomColor: '#B0B9D2',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   textList: {
     padding: 15,
